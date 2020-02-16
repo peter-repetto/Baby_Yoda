@@ -66,3 +66,21 @@ def confidence_interval(portfolio, initial_investment, withdraw_type, withdraw_n
     plt.axvline(quantile_result.iloc[0], color='r')
     plt.axvline(quantile_result.iloc[1], color='r')
     return plt
+
+def search_withdraw_amount(portfolio, initial_investment, years_to_retirement, target_amount):
+    try:
+        min_withdraw = round(initial_investment/100) #round(-initial_investment)
+        max_withdraw = round(initial_investment)
+        learning_rate = round(initial_investment/100)
+        for change in range(min_withdraw, max_withdraw, learning_rate):
+            investment_ending_price = portfolio_by_retirement(portfolio,initial_investment,'fixed amount', change, years_to_retirement).iloc[-1]
+            quantile_result = investment_ending_price.quantile(q=[0.10]).astype(int)
+                #print(f"If withdrawing ${change} annually, the 10% percentile return will be ${quantile_result.iloc[0]}.")
+            if quantile_result.iloc[0]<target_amount:
+                break
+            desired_withdraw_amount = change
+            ending_10_percentile_balance = quantile_result.iloc[0]
+        to_print = (f"The desired withdraw amount is ${desired_withdraw_amount} annually, and ending 10% percentile balance after {years_to_retirement} years would be ${ending_10_percentile_balance}.")
+    except:
+        to_print = "Your target return is out of bound.  Please input reasonable numbers!"
+    return print(to_print)
