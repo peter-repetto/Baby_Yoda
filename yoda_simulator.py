@@ -84,3 +84,21 @@ def search_withdraw_amount(portfolio, initial_investment, years_to_retirement, t
     except:
         to_print = "Your target return is out of bound.  Please input reasonable numbers!"
     return print(to_print)
+
+def search_withdraw_rate(portfolio, initial_investment, years_to_retirement, target_amount):
+    try:
+        min_withdraw = 0
+        max_withdraw = 1000
+        learning_rate = 5
+        for change in range(min_withdraw, max_withdraw, learning_rate):
+            investment_ending_price = portfolio_by_retirement(portfolio,initial_investment,'fixed rate', change/1000, years_to_retirement).iloc[-1]
+            quantile_result = investment_ending_price.quantile(q=[0.10]).astype(int)
+                    #print(f"If withdrawing ${change} annually, the 10% percentile return will be ${quantile_result.iloc[0]}.")
+            if quantile_result.iloc[0]<target_amount:
+                break
+            desired_withdraw_rate = change/1000
+            ending_10_percentile_balance = quantile_result.iloc[0]
+        to_print = (f"The desired withdraw rate is {desired_withdraw_rate*100}% annually, and ending 10% percentile balance after {years_to_retirement} years would be ${ending_10_percentile_balance}.")
+    except:
+        to_print = "Your target return is out of bound.  Please input reasonable numbers!"
+    return print(to_print)
