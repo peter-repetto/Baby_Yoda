@@ -52,8 +52,7 @@ def quantile_chart(portfolio, initial_investment, withdraw_type, withdraw_number
 
     daily_quantiles = portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement).quantile(q=(0.10,0.5,0.9), axis = 1).T
 
-    return daily_quantiles.plot(title = f"Investment of ${initial_investment}, withdraw {withdraw_type} by {withdraw_number} in {years_to_retirement} years.", 
-                     figsize=(10,5))
+    return daily_quantiles.plot(title = f"Investment of ${initial_investment}, withdraw {withdraw_type} by {withdraw_number} in {years_to_retirement} years.", figsize=(10,5))
 
 def simulation_chart(portfolio, initial_investment, withdraw_type, withdraw_number, years_to_retirement):
     return portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement).plot(legend = False, title = "Portfolio simulation", figsize = (15,10))
@@ -84,9 +83,11 @@ def search_withdraw_amount(portfolio, initial_investment, years_to_retirement, t
             to_print = (f"Rather than withdrawing, you should deposit ${-desired_withdraw_amount} annually, and ending 10% percentile balance after {years_to_retirement} years would be ${ending_10_percentile_balance}.")
         else:
             to_print = (f"The desired withdraw amount is ${desired_withdraw_amount} annually, and ending 10% percentile balance after {years_to_retirement} years would be ${ending_10_percentile_balance}.")
+        chart = quantile_chart(portfolio,initial_investment, 'fixed amount', desired_withdraw_amount, years_to_retirement)
     except:
         to_print = "Your target return is out of bound.  Please input reasonable numbers!"
-    return print(to_print), quantile_chart(portfolio,initial_investment, 'fixed amount', desired_withdraw_amount, years_to_retirement)
+        chart = ''
+    return print(to_print), chart
 
 def search_withdraw_rate(portfolio, initial_investment, years_to_retirement, target_amount):
     try:
@@ -105,6 +106,8 @@ def search_withdraw_rate(portfolio, initial_investment, years_to_retirement, tar
             to_print = (f"Rather than withdrawing, you should deposit {-desired_withdraw_rate*100}% annually, and ending 10% percentile balance after {years_to_retirement} years would be ${ending_10_percentile_balance}.")
         else:
             to_print = (f"The desired withdraw rate is {desired_withdraw_rate*100}% annually, and ending 10% percentile balance after {years_to_retirement} years would be ${ending_10_percentile_balance}.")
+        chart = quantile_chart(portfolio,initial_investment, 'fixed rate', desired_withdraw_rate, years_to_retirement)
     except:
         to_print = "Your target return is out of bound.  Please input reasonable numbers!"
-    return print(to_print), quantile_chart(portfolio,initial_investment, 'fixed rate', desired_withdraw_rate, years_to_retirement)
+        chart = ''
+    return print(to_print), chart
