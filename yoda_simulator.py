@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+import panel as pn
 
 np.random.seed(42)
 
@@ -49,7 +51,6 @@ def portfolio_by_retirement(portfolio, initial_investment, withdraw_type, withdr
 
 
 def quantile_chart(portfolio, initial_investment, withdraw_type, withdraw_number, years_to_retirement):
-
     daily_quantiles = portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement).quantile(q=(0.10,0.5,0.9), axis = 1).T
     if withdraw_number <0:
         withdraw_deposit = 'deposit'
@@ -57,19 +58,33 @@ def quantile_chart(portfolio, initial_investment, withdraw_type, withdraw_number
     else:
         withdraw_deposit = 'withdraw'
         withdraw_deposit_number = withdraw_number
-    return daily_quantiles.plot(title = f"Investment of ${initial_investment}, {withdraw_deposit} {withdraw_type} by {withdraw_deposit_number} in {years_to_retirement} years.", figsize=(5,5))
+    fig = Figure(figsize=(7, 5))
+    ax = fig.subplots()
+    ax.plot(daily_quantiles)
+    title = f"Investment of ${initial_investment}, {withdraw_deposit} {withdraw_type} by {withdraw_deposit_number} in {years_to_retirement} years."
+    ax.set_title(title)
+    return fig
 
 def simulation_chart(portfolio, initial_investment, withdraw_type, withdraw_number, years_to_retirement):
-    return portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement).plot(legend = False, title = "Portfolio simulation", figsize = (5,5))
+    fig = Figure(figsize=(7, 5))
+    ax = fig.subplots()
+    ax.plot(portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement))
+    title = "Portfolio simulation"
+    ax.set_title(title)
+    return fig
+
 
 def confidence_interval(portfolio, initial_investment, withdraw_type, withdraw_number, years_to_retirement):
-    plt.figure() # this is top-level container for all plot elements, make sure to close it when not suing any more.
     investment_ending_price = portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement).iloc[-1]
     quantile_result = investment_ending_price.quantile(q=[0.05, 0.95])
-    investment_ending_price.plot(kind = 'hist', title="90% confidence interval for tails")
-    plt.axvline(quantile_result.iloc[0], color='r')
-    plt.axvline(quantile_result.iloc[1], color='r')
-    return plt
+    fig = Figure(figsize=(7, 5))
+    ax = fig.subplots()
+    ax.hist(investment_ending_price)
+    title="90% confidence interval for tails"
+    ax.set_title(title)
+    ax.axvline(quantile_result.iloc[0], color='r')
+    ax.axvline(quantile_result.iloc[1], color='r')
+    return fig
 
 def search_withdraw_amount(portfolio, initial_investment, years_to_retirement, target_amount):
     result = {}
