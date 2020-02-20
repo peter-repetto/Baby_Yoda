@@ -57,10 +57,10 @@ def quantile_chart(portfolio, initial_investment, withdraw_type, withdraw_number
     else:
         withdraw_deposit = 'withdraw'
         withdraw_deposit_number = withdraw_number
-    return daily_quantiles.plot(title = f"Investment of ${initial_investment}, {withdraw_deposit} {withdraw_type} by {withdraw_deposit_number} in {years_to_retirement} years.", figsize=(10,5))
+    return daily_quantiles.plot(title = f"Investment of ${initial_investment}, {withdraw_deposit} {withdraw_type} by {withdraw_deposit_number} in {years_to_retirement} years.", figsize=(5,5))
 
 def simulation_chart(portfolio, initial_investment, withdraw_type, withdraw_number, years_to_retirement):
-    return portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement).plot(legend = False, title = "Portfolio simulation", figsize = (15,10))
+    return portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement).plot(legend = False, title = "Portfolio simulation", figsize = (5,5))
 
 def confidence_interval(portfolio, initial_investment, withdraw_type, withdraw_number, years_to_retirement):
     plt.figure() # this is top-level container for all plot elements, make sure to close it when not suing any more.
