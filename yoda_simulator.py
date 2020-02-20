@@ -51,8 +51,13 @@ def portfolio_by_retirement(portfolio, initial_investment, withdraw_type, withdr
 def quantile_chart(portfolio, initial_investment, withdraw_type, withdraw_number, years_to_retirement):
 
     daily_quantiles = portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement).quantile(q=(0.10,0.5,0.9), axis = 1).T
-
-    return daily_quantiles.plot(title = f"Investment of ${initial_investment}, withdraw {withdraw_type} by {withdraw_number} in {years_to_retirement} years.", figsize=(10,5))
+    if withdraw_number <0:
+        withdraw_deposit = 'deposit'
+        withdraw_deposit_number = -withdraw_number
+    else:
+        withdraw_deposit = 'withdraw'
+        withdraw_deposit_number = withdraw_number
+    return daily_quantiles.plot(title = f"Investment of ${initial_investment}, {withdraw_deposit} {withdraw_type} by {withdraw_deposit_number} in {years_to_retirement} years.", figsize=(10,5))
 
 def simulation_chart(portfolio, initial_investment, withdraw_type, withdraw_number, years_to_retirement):
     return portfolio_by_retirement(portfolio,initial_investment, withdraw_type, withdraw_number, years_to_retirement).plot(legend = False, title = "Portfolio simulation", figsize = (15,10))
