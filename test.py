@@ -25,8 +25,11 @@ withdraw_number = 40
 withdraw_type = 'fixed amount'
 investment_goal = 2500
 portfolio = portfolio1
+portfolio.iloc[2,:] = portfolio.iloc[2,:]/sum(portfolio.iloc[2,:])
 
 portfolio_dimension = portfolio.shape
+
+
     
 for stock in range(portfolio_dimension[1]):
     globals()['stock_%s' % stock]= np.random.normal(portfolio.iloc[0,stock], 
@@ -50,7 +53,9 @@ for year in range(30):
             stock_month_daily_return = np.concatenate((next_beginning_balance,
                                                         (globals()['stock_%s' % stock][year*12*21+month*21:year*12*21+(month+1)*21])+1), 
                                                         axis = 0)
-            portfolio_monthly_return += np.cumprod(stock_month_daily_return, axis = 0)*portfolio.iloc[2,stock]
+            midstep1 = np.cumprod(stock_month_daily_return, axis = 0)
+            midstep2 = midstep1*portfolio.iloc[2,stock]
+            portfolio_monthly_return += midstep2
 
             #get balance for rebalancing in next loop.
         next_beginning_balance = (portfolio_monthly_return[-1,:]).reshape(1,500)
