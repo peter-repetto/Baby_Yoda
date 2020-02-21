@@ -8,6 +8,7 @@ import panel as pn
 np.random.seed(42)
 
 def portfolio_by_retirement(portfolio, initial_investment, withdraw_type, withdraw_number, years_to_retirement):
+    portfolio.iloc[2,:] = portfolio.iloc[2,:]/sum(portfolio.iloc[2,:])
     portfolio_dimension = portfolio.shape
     
     for stock in range(portfolio_dimension[1]):
